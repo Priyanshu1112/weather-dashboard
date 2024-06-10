@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "tailwind.config.tsss"
+  ],
+  "exclude": ["node_modules"]
+}
