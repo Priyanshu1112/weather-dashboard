@@ -65,8 +65,8 @@ const Dashboard = () => {
     <DashboardLayout>
       {current ? (
         <>
-          <div className="w-4/5 mx-auto flex items-center justify-between mt-5">
-            <span className="flex gap-4 font-semibold">
+          <div className="md:w-4/5 md:mx-auto md:flex items-center justify-between mt-5">
+            <span className="flex flex-col md:flex-row gap-1 md:gap-4 font-semibold">
               <span>
                 Region :{" "}
                 {current.location.region ||
@@ -81,14 +81,17 @@ const Dashboard = () => {
             <Button
               onClick={() => setActiveIndex(-1)}
               disabled={activeIndex == -1}
-              className="bg-red-400 hover:bg-red-300 disabled:bg-hover-red-300"
+              className="bg-red-400 hover:bg-red-300 disabled:bg-hover-red-300 hidden md:block"
             >
               Collapse
             </Button>
           </div>
-          <div ref={containerRef} className="w-4/5 mx-auto flex gap-5 mt-5">
+          <div
+            ref={containerRef}
+            className="md:w-4/5 mx-auto flex-col-reverse md:flex-row flex gap-5 mt-5"
+          >
             <div
-              className="grid grid-cols-3 grid-rows-2 gap-3 flex-[.6] "
+              className="grid md:grid-cols-3 md:grid-rows-2 gap-3 flex-[.6] "
               onClick={handleClick}
             >
               {metrics.map((metric, idx) => (

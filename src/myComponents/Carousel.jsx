@@ -57,7 +57,7 @@ const CarouselWrapper = ({ height, current }) => {
   return (
     <div
       className={cn(
-        "flex-[.4] flex flex-col bg-white rounded-lg",
+        "flex-[.4] flex flex-col bg-white rounded-lg mt-5 md:mt-0",
         `max-h-[${height}px] `
       )}
     >

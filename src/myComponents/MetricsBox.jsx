@@ -90,7 +90,7 @@ const MetricsBox = ({ index, activeIndex, metric }) => {
             </Select>
           </div>
           <div>
-            <Bar data={data} options={options} />
+            {/* <Bar data={data} options={options} /> */}
           </div>
         </div>
       )}

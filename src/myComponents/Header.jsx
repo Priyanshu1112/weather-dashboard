@@ -53,7 +53,6 @@ const Header = () => {
       toast.error("Fetching failed: " + error.message);
     },
   });
-  
 
   useEffect(() => {
     let loadingToastId;
@@ -70,37 +69,45 @@ const Header = () => {
   }, [isLoading]);
 
   return (
-    <div className="w-4/5 bg-primary text-white py-1 px-5 rounded-full mx-auto mb-5 flex justify-between gap-12">
-      <Select
-        value={selectedTimeFrame}
-        onValueChange={(value) => setSelectedTimeFrame(value)}
-      >
-        <SelectTrigger className="bg-transparent capitalize font-semibold flex-1 max-w-[30%]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {timeFrames.map((timeFrame) => (
-            <SelectItem
-              className="capitalize"
-              key={timeFrame}
-              value={timeFrame}
-            >
-              {timeFrame}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Input
-        className="bg-transparent max-w-[30%] border-0 flex-1 border-b-[1px] font-semibold rounded-none focus-visible:ring-0 focus-visible:border-b-2 border-white"
-        placeholder="Enter Region"
-        value={country}
-        onChange={(e) => setCountry(e.target.value)}
-      />
-      <DateRangePicker
-        date={date}
-        setDate={setDate}
-        className={"bg-transparent max-w-[30%]"}
-      />
+    <div className="md:w-4/5 bg-primary text-white px-5 rounded-md lg:rounded-full mx-auto mb-5 flex flex-col flex-wrap md:flex-row py-4 md:items-center justify-between md:gap-12">
+      <div className="flex items-center justify-between mb-5 md:mb-0">
+        <Select
+          value={selectedTimeFrame}
+          onValueChange={(value) => setSelectedTimeFrame(value)}
+        >
+          <SelectTrigger className="bg-transparent capitalize font-semibold flex-1 max-w-[30%]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {timeFrames.map((timeFrame) => (
+              <SelectItem
+                className="capitalize"
+                key={timeFrame}
+                value={timeFrame}
+              >
+                {timeFrame}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Input
+          // className="bg-transparent border-0 flex-1 border-b-[1px] font-semibold rounded-none focus-visible:ring-0 focus-visible:border-b-2 border-white"
+          className="flex h-10 w-full rounded-md border border-white bg-transparent px-3 py-2 text-sm placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-black/30 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Enter Region"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+        />
+      </div>
+
+      <div className="flex items-start justify-start ">
+        <div className=" w-[20%]">
+          <DateRangePicker
+            date={date}
+            setDate={setDate}
+            className={"bg-transparent w-full"}
+          />
+        </div>
+      </div>
     </div>
   );
 };
