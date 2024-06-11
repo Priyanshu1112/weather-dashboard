@@ -12,7 +12,6 @@ import {
   BarChart,
   Eye,
   Sun,
-  Database,
   Umbrella,
 } from "lucide-react";
 
@@ -34,6 +33,8 @@ const Dashboard = () => {
   }, [containerRef, last, data]);
 
   const handleClick = (e) => {
+    if (last == "future") return;
+    
     const index = e.target.closest(".metric-box")?.dataset.index;
     setActiveIndex(index ? Number(index) : -1);
   };
