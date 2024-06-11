@@ -1,6 +1,6 @@
 // src/layouts/Sidebar.jsx
 import { cn } from "@/lib/utils";
-import { FileText, Layout, SettingsIcon, Users } from "lucide-react";
+import { FileText, Layout, SettingsIcon, Users, X } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -19,11 +19,25 @@ const menus = [
   { name: "Settings", path: "/settings", icon: <SettingsIcon size={20} /> },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarACtive, setIsSidebarActive }) => {
   const { pathname } = useLocation();
   return (
-    <nav className="w-64 bg-primary text-white p-4 rounded-se-[35px]">
-      <h1 className="text-3xl font-bold text-center mb-5">Weather</h1>
+    <nav
+      className={`${
+        isSidebarACtive
+          ? "translate-x-[0%] md:translate-x-0"
+          : "translate-x-[-100%] md:translate-x-0"
+      } md:w-64 bg-primary text-white p-4 md:rounded-se-[35px] z-20 fixed h-full md:h-screen w-full top-0 md:sticky`}
+    >
+      <div className="flex items-start justify-between">
+        <h1 className="text-3xl font-bold md:text-center mb-5">Weather</h1>
+        <div
+          className="mt-3 md:hidden"
+          onClick={() => setIsSidebarActive(false)}
+        >
+          <X />
+        </div>
+      </div>
       <ul className="flex flex-col gap-y-3 font-semibold">
         {menus.map((menu) => (
           <Link
