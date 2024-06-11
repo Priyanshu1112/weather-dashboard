@@ -8,7 +8,7 @@ To run this project locally, follow these steps:
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/Priyanshu1112/weather-broadcast.git
+    git clone https://github.com/Priyanshu1112/weather-dashboard.git
     cd weather-broadcast
     ```
 
