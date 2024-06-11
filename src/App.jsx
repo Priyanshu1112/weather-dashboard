@@ -6,6 +6,7 @@ import Layout from "./layout/Layout";
 import Connect from "./pages/Connect";
 import Report from "./pages/Report";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 function App() {

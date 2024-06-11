@@ -1,8 +1,8 @@
+import { Toaster } from "@/components/ui/sonner";
 import AppProvider from "@/lib/AppContext";
 import Sidebar from "@/myComponents/Sidebar";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Toaster } from "sonner";
 
 const Layout = () => {
   return (
@@ -13,7 +13,7 @@ const Layout = () => {
           <Outlet />
         </main>
       </div>
-      <Toaster/>
+      <Toaster />
     </AppProvider>
   );
 };

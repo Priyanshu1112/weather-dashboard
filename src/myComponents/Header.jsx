@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from "react";
+import React, { useContext, useState, useRef } from "react";
 import {
   Select,
   SelectContent,
@@ -9,69 +9,119 @@ import {
 import { Input } from "@/components/ui/input";
 import { DateRangePicker } from "./DateRangePicker";
 import { useQuery } from "react-query";
-import { fetchWeather } from "@/actions/fetchCurrent";
 import { AppContext } from "@/lib/AppContext";
 import { toast } from "sonner";
-import debounce from "lodash/debounce";
+import { fetchForecast, fetchHistory } from "@/actions/weatherDetails";
 
-const timeFrames = ["daily", "weekly", "monthly"];
+const timeFrames = ["hourly", "daily"];
 
 const Header = () => {
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState("daily");
+  const debounceRef = useRef(null);
   const [country, setCountry] = useState("India");
   const [date, setDate] = useState({
-    from: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+    from: new Date(),
     to: new Date(),
   });
 
-  const { setCurrent } = useContext(AppContext);
+  const {
+    last,
+    selectedTimeFrame,
+    setSelectedTimeFrame,
+    setHistory,
+    setFuture,
+    setLast,
+  } = useContext(AppContext);
 
-  const debouncedQueryKey = useMemo(() => {
-    return debounce((newQueryKey) => {
-      setQueryKey(newQueryKey);
-    }, 1500); // 300ms debounce time
-  }, []);
+  const checkDate = (date) => {
+    const today = new Date();
+    if (
+      date.getDate() == today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    )
+      return "today";
+    else if (
+      date.getDate() <= today.getDate() &&
+      date.getMonth() <= today.getMonth() &&
+      date.getFullYear() <= today.getFullYear()
+    )
+      return "history";
+    else return "future";
+  };
 
-  const [queryKey, setQueryKey] = useState([
-    "current",
-    { timeFrame: selectedTimeFrame, country },
-  ]);
+  const queryFunction = async ({ queryKey }) => {
+    let isFetching = false;
+    let type = null;
+    const [_, date, country, timeFrame] = queryKey;
+    let res;
 
-  useEffect(() => {
-    debouncedQueryKey(["current", { date, country }]);
-  }, [selectedTimeFrame, country, date, debouncedQueryKey]);
-
-  const { data, isLoading, error } = useQuery(queryKey, fetchWeather, {
-    enabled: !!country,
-    refetchOnConnect: true,
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      setCurrent(data);
-      toast.success("Successfully fetched!");
-    },
-    onError: (error) => {
-      toast.error("Fetching failed: " + error.message);
-    },
-  });
-  
-
-  useEffect(() => {
-    let loadingToastId;
-    if (isLoading) {
-      loadingToastId = toast.loading("Fetching...");
-    } else if (!isLoading && loadingToastId) {
-      toast.dismiss(loadingToastId);
+    if (
+      (checkDate(date.to) == "today" && checkDate(date.from) == "today") ||
+      (checkDate(date.from) == "history" &&
+        (checkDate(date.to) == "history" || checkDate(date.to) == "today"))
+    ) {
+      isFetching = true;
+      type = "history";
+      res = fetchHistory(country, date);
+    } else if (
+      (checkDate(date.from) == "future" || checkDate(date.from) == "today") &&
+      checkDate(date.to) == "future"
+    ) {
+      isFetching = true;
+      type = "future";
+      res = fetchForecast(country, date);
+    } else if (
+      checkDate(date.from) == "history" &&
+      checkDate(date.to) == "future"
+    ) {
+      toast.error(
+        "Conflicting Range : should be either before or after today!"
+      );
     }
-    return () => {
-      if (loadingToastId) {
-        toast.dismiss(loadingToastId);
+
+    if (isFetching) {
+      let data = await res;
+
+      if (data.status !== 200) {
+        return toast.error(data.response.data.error.message);
       }
-    };
-  }, [isLoading]);
+
+      toast.promise(res, {
+        loading: "Fetching...",
+        success: "Fetched successfully!",
+        error: "Error fetching!",
+      });
+
+      switch (type) {
+        case "history":
+          res.then((res) => setHistory(res.data));
+          setLast("history");
+          break;
+        case "future":
+          res.then((res) => setFuture(res.data));
+          setLast("future");
+          break;
+      }
+    }
+  };
+
+  const debounceFn = async ({ queryKey }) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      queryFunction({ queryKey });
+    }, 1500);
+  };
+
+  useQuery({
+    queryKey: ["weather", date, country],
+    queryFn: debounceFn,
+    enabled: !!date && !!selectedTimeFrame && !!country,
+  });
 
   return (
     <div className="w-4/5 bg-primary text-white py-1 px-5 rounded-full mx-auto mb-5 flex justify-between gap-12">
       <Select
+        disabled={last == "future"}
         value={selectedTimeFrame}
         onValueChange={(value) => setSelectedTimeFrame(value)}
       >

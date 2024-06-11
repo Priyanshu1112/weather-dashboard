@@ -5,78 +5,152 @@ import { AppContext } from "@/lib/AppContext";
 import Carousel from "@/myComponents/Carousel";
 import MetricsBox from "@/myComponents/MetricsBox";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Thermometer, Droplet, Wind, BarChart, Eye, Sun } from "lucide-react";
+import {
+  Thermometer,
+  Droplet,
+  Wind,
+  BarChart,
+  Eye,
+  Sun,
+  Database,
+  Umbrella,
+} from "lucide-react";
 
 const Dashboard = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const containerRef = useRef(null);
   const [height, setHeight] = useState(null);
-  const { current } = useContext(AppContext);
+  const { last, history, future } = useContext(AppContext);
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // console.log(last, data);
+
+    setData(last == "history" ? history : future);
+  }, [last, history, future]);
 
   useEffect(() => {
     if (containerRef.current) setHeight(containerRef.current.offsetHeight);
-  }, [containerRef, current]);
-
-  useEffect(() => {
-    console.log(current);
-  }, [current]);
+  }, [containerRef, last, data]);
 
   const handleClick = (e) => {
     const index = e.target.closest(".metric-box")?.dataset.index;
     setActiveIndex(index ? Number(index) : -1);
   };
 
-  const metrics = current
-    ? [
-        {
-          label: "Temperature (°C)",
-          value: current.current.temp_c,
-          icon: <Thermometer />,
-        },
-        {
-          label: "Feels Like (°C)",
-          value: current.current.feelslike_c,
-          icon: <Sun />,
-        },
-        {
-          label: "Humidity (%)",
-          value: current.current.humidity,
-          icon: <Droplet />,
-        },
-        {
-          label: "Wind Speed (kph)",
-          value: current.current.wind_kph,
-          icon: <Wind />,
-        },
-        {
-          label: "Pressure (mb)",
-          value: current.current.pressure_mb,
-          icon: <BarChart />,
-        },
-        {
-          label: "Visibility (km)",
-          value: current.current.vis_km,
-          icon: <Eye />,
-        },
-      ]
+  const getCurrentMetrics = (data) => {
+    if (!data.current) {
+      return [];
+    }
+
+    return [
+      {
+        label: "Temperature (°C)",
+        value: data.current.temp_c,
+        icon: <Thermometer />,
+      },
+      {
+        label: "Feels Like (°C)",
+        value: data.current.feelslike_c,
+        icon: <Sun />,
+      },
+      {
+        label: "Humidity (%)",
+        value: data.current.humidity,
+        icon: <Droplet />,
+      },
+      {
+        label: "Wind Speed (kph)",
+        value: data.current.wind_kph,
+        icon: <Wind />,
+      },
+      {
+        label: "Pressure (mb)",
+        value: data.current.pressure_mb,
+        icon: <BarChart />,
+      },
+      {
+        label: "Visibility (km)",
+        value: data.current.vis_km,
+        icon: <Eye />,
+      },
+    ];
+  };
+
+  const getHistoryMetrics = (data) => {
+    if (
+      !data.forecast ||
+      !data.forecast.forecastday ||
+      data.forecast.forecastday.length === 0
+    ) {
+      return [];
+    }
+
+    const lastForecast =
+      data.forecast.forecastday[data.forecast.forecastday.length - 1].day;
+
+    if (!lastForecast) {
+      return [];
+    }
+
+    return [
+      {
+        label: "Avg Temperature (°C)",
+        value: lastForecast.avgtemp_c,
+        icon: <Thermometer />,
+      },
+      {
+        label: "Precipitate (in)",
+        value: lastForecast.totalprecip_in,
+        icon: <Umbrella />,
+      },
+      {
+        label: "Avg Humidity (%)",
+        value: lastForecast.avghumidity,
+        icon: <Droplet />,
+      },
+      {
+        label: "Max Wind Speed (kph)",
+        value: lastForecast.maxwind_kph,
+        icon: <Wind />,
+      },
+      {
+        label: "UV",
+        value: lastForecast.uv,
+        icon: <BarChart />,
+      },
+      {
+        label: "Avg Visibility (km)",
+        value: lastForecast.avgvis_km,
+        icon: <Eye />,
+      },
+    ];
+  };
+
+  const metrics = data
+    ? last === "future" && future
+      ? getCurrentMetrics(data)
+      : history
+      ? getHistoryMetrics(data)
+      : []
     : [];
 
   return (
     <DashboardLayout>
-      {current ? (
+      {last && data ? (
         <>
           <div className="w-4/5 mx-auto flex items-center justify-between mt-5">
             <span className="flex gap-4 font-semibold">
               <span>
                 Region :{" "}
-                {current.location.region ||
-                  current.location.country ||
-                  current.location.country ||
+                {data.location.region ||
+                  data.location.country ||
+                  data.location.country ||
                   "N/A"}
               </span>
-              <span>Latitude : {current.location.lat}</span>
-              <span>Longitude : {current.location.lon}</span>
-              <span>LocalTime : {current.location.localtime} </span>
+              <span>Latitude : {data.location.lat}</span>
+              <span>Longitude : {data.location.lon}</span>
+              <span>LocalTime : {data.location.localtime} </span>
             </span>
             <Button
               onClick={() => setActiveIndex(-1)}
@@ -88,7 +162,7 @@ const Dashboard = () => {
           </div>
           <div ref={containerRef} className="w-4/5 mx-auto flex gap-5 mt-5">
             <div
-              className="grid grid-cols-3 grid-rows-2 gap-3 flex-[.6] "
+              className="grid grid-cols-3 grid-rows-2 gap-3 flex-[.6]"
               onClick={handleClick}
             >
               {metrics.map((metric, idx) => (
@@ -100,7 +174,7 @@ const Dashboard = () => {
                 />
               ))}
             </div>
-            {height && <Carousel height={height} current={current.current} />}
+            {height && <Carousel height={height} />}
           </div>
         </>
       ) : (
@@ -115,3 +189,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
