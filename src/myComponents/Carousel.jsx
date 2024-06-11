@@ -1,6 +1,6 @@
 import { AppContext } from "@/lib/AppContext";
 import { cn } from "@/lib/utils";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React from "react";
 import BarChart from "./BarChart";
 import {
   Carousel,

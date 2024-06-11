@@ -162,10 +162,10 @@ const Dashboard = () => {
           </div>
           <div
             ref={containerRef}
-            className="md:w-4/5 mx-auto flex-col-reverse md:flex-row flex gap-5 mt-5"
+            className="w-full md:w-4/5 mx-auto flex-col-reverse md:flex-row flex gap-5 mt-5"
           >
             <div
-              className="grid md:grid-cols-3 md:grid-rows-2 gap-3 flex-[.6] "
+              className="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-3 md:flex-[.6] "
               onClick={handleClick}
             >
               {metrics.map((metric, idx) => (
@@ -192,4 +192,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
