@@ -33,7 +33,7 @@ const Dashboard = () => {
   }, [containerRef, last, data]);
 
   const handleClick = (e) => {
-    if (last == "future") return;
+    if (last == "future") return setActiveIndex(-1);
     
     const index = e.target.closest(".metric-box")?.dataset.index;
     setActiveIndex(index ? Number(index) : -1);
@@ -163,7 +163,7 @@ const Dashboard = () => {
           </div>
           <div
             ref={containerRef}
-            className="w-full md:w-4/5 mx-auto flex-col-reverse md:flex-row flex gap-5 mt-5"
+            className="w-full md:w-4/5 mx-auto flex-col-reverse lg:flex-row flex gap-5 mt-5"
           >
             <div
               className="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-3 md:flex-[.6] "
