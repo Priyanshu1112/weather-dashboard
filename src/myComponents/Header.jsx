@@ -126,7 +126,7 @@ const Header = () => {
           value={selectedTimeFrame}
           onValueChange={(value) => setSelectedTimeFrame(value)}
         >
-          <SelectTrigger className="bg-transparent capitalize font-semibold flex-1 max-w-[30%]">
+          <SelectTrigger className="bg-transparent capitalize font-semibold flex-1 min-w-[35%]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
