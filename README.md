@@ -1,8 +1,41 @@
-# React + Vite
+# Weather Broadcast
+Weather Broadcast is a responsive web application that provides detailed weather information for various locations over different timeframes.
+[Visit Project](https://weather-dashboard-one-pi.vercel.app/)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Installation
 
-Currently, two official plugins are available:
+To run this project locally, follow these steps:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/Priyanshu1112/weather-dashboard.git
+    cd weather-broadcast
+    ```
+
+2. **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3. **Create a `.env` file** in the root directory and add your WeatherAPI key:
+    ```env
+    VITE_API_KEY = YOUR_API_KEY
+    VITE_BASE_URL =  'https://api.weatherapi.com/v1'
+    ```
+
+4. **Run the application**:
+    ```bash
+    npm run dev
+    ```
+
+5. **Open your browser** and navigate to:
+    ```
+    http://localhost:5173/
+    ```
+
+
+
+
+
+
+
